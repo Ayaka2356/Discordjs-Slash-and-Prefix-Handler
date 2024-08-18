@@ -1,6 +1,6 @@
 {
     "TOKEN": "", //Bot token
-    "APP_ID": "", // Bot ID
-    "GUILD_ID": "", // Guild ID
-    "MODE": "", // Use DEBUG for only guild commands and RELEASE for Global Commands.
+    "APP_ID": "", //Bot ID
+    "GUILD_ID": "", //Guild ID
+    "MODE": "", //Use DEBUG for only guild commands and RELEASE for Global Commands.
   }
