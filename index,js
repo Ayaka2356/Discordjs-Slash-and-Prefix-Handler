@@ -1,0 +1,65 @@
+const { Client, Collection } = require("discord.js");
+const { readdirSync } = require("fs");
+const { join } = require("path");
+const { token } = require('./config.json');
+const client = new Client({
+  intents: ["Guilds", "GuildMembers", "GuildPresences", "GuildMessages", "MessageContent"]
+});
+client.commands = new Collection();
+readdirSync(join(__dirname, "commands"))
+  .filter((file) => file.endsWith(".js"))
+  .forEach((file) => {
+    const command = require(`./commands/${file}`);
+    console.log(`Command loaded - ${file}`);
+
+    client.commands.set(command.data.name, command);
+  });
+// Prefix commands
+client.prefixCommands = new Collection(); // Initialize prefixCommands as a Collection
+const prefixCommands = readdirSync(join(__dirname, "prefixCommands"))
+  .filter((file) => file.endsWith(".js"))
+  .forEach((file) => {
+    const command = require(`./prefixCommands/${file}`);
+    console.log(`Prefix command loaded - ${file}`);
+
+    client.prefixCommands.set(command.name, command);
+  });
+client.on('ready', async (client) => {
+  console.log(`${client.user.tag} is ready!`);
+    } catch (err) {
+      console.error(`Error in giveaway auto stop: ${err}`);
+    }
+  }, 10 * 1000); 
+});
+client.on("interactionCreate", async (interaction) => {
+  if (!interaction.isChatInputCommand()) return;
+
+  const command = client.commands.get(interaction.commandName);
+  if (!command) return;
+
+  try {
+    await command.execute(client, interaction);
+  } catch (err) {
+    console.error(err);
+  }
+});
+client.on('messageCreate', async (message) => {
+  if (message.author.bot) return;
+
+  const prefix = '!'; // Your prefix here
+  if (!message.content.startsWith(prefix)) return;
+
+  const args = message.content.slice(prefix.length).trim().split(/ +/);
+  const commandName = args.shift().toLowerCase();
+
+  const command = client.prefixCommands.get(commandName);
+  if (!command) return;
+
+  try {
+    await command.executeMessage(message, args);
+  } catch (error) {
+    console.error(error);
+    await message.reply({ content: 'There was an error while executing this command!' });
+  }
+})
+client.login(token);
