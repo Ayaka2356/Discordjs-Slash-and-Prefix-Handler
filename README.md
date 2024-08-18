@@ -53,7 +53,7 @@ const prefixCommands = readdirSync(join(__dirname, "prefixCommands"))
     client.prefixCommands.set(command.name, command);
   });
 ```
-Message Event 
+## Message Event 
 ```
 client.on('messageCreate', async (message) => {
   if (message.author.bot) return;
@@ -90,7 +90,7 @@ readdirSync(join(__dirname, "commands"))
     client.commands.set(command.data.name, command);
   });
 ```
-Interaction Event 
+## Interaction Event 
 ```
 client.on("interactionCreate", async (interaction) => {
   if (!interaction.isChatInputCommand()) return;
